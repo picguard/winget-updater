@@ -1,4 +1,5 @@
 name: Generate Manifest
+run-name: Generate Manifest ${{ inputs.tag_name }}
 
 on:
   workflow_dispatch:

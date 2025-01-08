@@ -1,4 +1,5 @@
 name: Remove Version (Beta)
+run-name: Remove Version (Beta) ${{ inputs.tag_name }}
 
 on:
   workflow_dispatch:

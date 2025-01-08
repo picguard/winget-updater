@@ -1,4 +1,5 @@
-name: PR
+name: PR Stable
+run-name: PR Stable ${{ inputs.tag_name }}
 
 on:
   workflow_dispatch:

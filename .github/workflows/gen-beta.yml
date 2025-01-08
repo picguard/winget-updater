@@ -1,4 +1,5 @@
-name: Generate Beta Manifest
+name: Generate Manifest (Beta)
+run-name: Generate Manifest (Beta) ${{ inputs.tag_name }}
 
 on:
   workflow_dispatch:
