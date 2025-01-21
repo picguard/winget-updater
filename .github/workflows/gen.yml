@@ -64,6 +64,10 @@ jobs:
           # msiinfo export picguard_1.0.1+405_windows_x64_en-US.msi Property | sed -n 's/^ProductCode\s\+//p'
           echo "enproductcode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}_windows_x64_en-US.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
           echo "zhproductcode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}_windows_x64_zh-CN.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          
+          # msiinfo export picguard_1.0.1+405_windows_x64_en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p'
+          echo "enupgradecode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}_windows_x64_en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          echo "zhupgradecode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}_windows_x64_zh-CN.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
 
       - name: Get ReleaseDate
         id: date
@@ -92,6 +96,8 @@ jobs:
           sed -i 's/${zhsha256}/${{ steps.sha256.outputs.zhsha256 }}/' ./stable/Insco.PicGuard.installer.yaml
           sed -i "s/'\${enproductcode}'/'${{ steps.sha256.outputs.enproductcode }}'/g" ./stable/Insco.PicGuard.installer.yaml
           sed -i "s/'\${zhproductcode}'/'${{ steps.sha256.outputs.zhproductcode }}'/g" ./stable/Insco.PicGuard.installer.yaml
+          sed -i "s/'\${enupgradecode}'/'${{ steps.sha256.outputs.enupgradecode }}'/g" ./stable/Insco.PicGuard.installer.yaml
+          sed -i "s/'\${zhupgradecode}'/'${{ steps.sha256.outputs.zhupgradecode }}'/g" ./stable/Insco.PicGuard.installer.yaml
           
           sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/Insco.PicGuard.locale.en-US.yaml
           sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/Insco.PicGuard.locale.en-US.yaml

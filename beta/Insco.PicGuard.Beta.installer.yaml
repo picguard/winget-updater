@@ -22,7 +22,7 @@ Installers:
     ProductCode: '${enproductcode}'
     AppsAndFeaturesEntries:
       - ProductCode: '${enproductcode}'
-        UpgradeCode: '{62EB3032-F9FB-4440-8DEF-B9D7BDFFD9F4}'
+        UpgradeCode: '${enupgradecode}'
   - Architecture: x64
     InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}.pre/picguard_${release}.pre_windows_x64_zh-CN.msi
     InstallerSha256: ${zhsha256}
@@ -30,6 +30,6 @@ Installers:
     ProductCode: '${zhproductcode}'
     AppsAndFeaturesEntries:
       - ProductCode: '${zhproductcode}'
-        UpgradeCode: '{62EB3032-F9FB-4440-8DEF-B9D7BDFFD9F4}'
+        UpgradeCode: '${zhupgradecode}'
 ManifestType: installer
 ManifestVersion: 1.9.0
