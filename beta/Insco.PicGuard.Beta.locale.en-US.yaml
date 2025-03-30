@@ -28,6 +28,6 @@ Tags:
   - watermark
   - watermarkassistant
   - watermark-assistant
-ReleaseNotesUrl: https://raw.githubusercontent.com/picguard/picguard/v${release}.pre/CHANGELOG.md
+ReleaseNotesUrl: https://raw.githubusercontent.com/picguard/picguard/v${release}.rc/CHANGELOG.md
 ManifestType: defaultLocale
 ManifestVersion: 1.9.0

@@ -55,19 +55,19 @@ jobs:
       - name: Get SHA256
         id: sha256
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}.pre/picguard_${{ needs.get_version.outputs.release }}.pre_windows_x64_en-US.msi
-          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}.pre/picguard_${{ needs.get_version.outputs.release }}.pre_windows_x64_zh-CN.msi
+          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}.rc/picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-en-US.msi
+          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}.rc/picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-zh-CN.msi
 
-          echo "ensha256=$(sha256sum picguard_${{ needs.get_version.outputs.release }}_windows_x64_en-US.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
-          echo "zhsha256=$(sha256sum picguard_${{ needs.get_version.outputs.release }}_windows_x64_zh-CN.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
+          echo "ensha256=$(sha256sum picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-en-US.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
+          echo "zhsha256=$(sha256sum picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-zh-CN.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
 
           # msiinfo export picguard_1.0.1+405_windows_x64_en-US.msi Property | sed -n 's/^ProductCode\s\+//p'
-          echo "enproductcode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}.pre_windows_x64_en-US.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
-          echo "zhproductcode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}.pre_windows_x64_zh-CN.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          echo "enproductcode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-en-US.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          echo "zhproductcode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-zh-CN.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
 
           # msiinfo export picguard_1.0.1+405_windows_x64_en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p'
-          echo "enupgradecode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}.pre_windows_x64_en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
-          echo "zhupgradecode=$(msiinfo export picguard_${{ needs.get_version.outputs.release }}.pre_windows_x64_zh-CN.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          echo "enupgradecode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          echo "zhupgradecode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-zh-CN.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
 
       - name: Get ReleaseDate
         id: date
@@ -76,7 +76,7 @@ jobs:
             curl -L \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ github.token }}" \
-              https://api.github.com/repos/picguard/picguard/releases/tags/v${{ inputs.tag_name }}.pre \
+              https://api.github.com/repos/picguard/picguard/releases/tags/v${{ inputs.tag_name }}.rc \
             | jq -r '.published_at' \
             | cut -c 1-10 \
           )" >> $GITHUB_OUTPUT
@@ -103,7 +103,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: manifest-${{ inputs.tag_name }}.pre
+          name: manifest-${{ inputs.tag_name }}.rc
           path: |
             ./beta/Insco.PicGuard.Beta.installer.yaml
             ./beta/Insco.PicGuard.Beta.locale.*.yaml

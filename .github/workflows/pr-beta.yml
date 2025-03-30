@@ -78,7 +78,7 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4
         with:
-          name: manifest-${{ inputs.tag_name }}.pre
+          name: manifest-${{ inputs.tag_name }}.rc
           path: manifests/i/Insco/PicGuard/Beta/${{ needs.get_version.outputs.version }}
 
       - name: Commit & Push

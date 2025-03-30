@@ -16,7 +16,7 @@ UpgradeBehavior: install
 ReleaseDate: ${releasedate}
 Installers:
   - Architecture: x64
-    InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}.pre/picguard_${release}.pre_windows_x64_en-US.msi
+    InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}.rc/picguard-${version}.rc-windows-x64-en-US.msi
     InstallerSha256: ${ensha256}
     InstallerLocale: en-US
     ProductCode: '${enproductcode}'
@@ -24,7 +24,7 @@ Installers:
       - ProductCode: '${enproductcode}'
         UpgradeCode: '${enupgradecode}'
   - Architecture: x64
-    InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}.pre/picguard_${release}.pre_windows_x64_zh-CN.msi
+    InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}.rc/picguard-${version}.rc-windows-x64-zh-CN.msi
     InstallerSha256: ${zhsha256}
     InstallerLocale: zh-CN
     ProductCode: '${zhproductcode}'
