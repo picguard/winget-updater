@@ -20,8 +20,8 @@ jobs:
     name: Get version
     runs-on: ubuntu-22.04
     outputs:
-      version: ${{ steps.version_step.outputs.version }}
       release: ${{ steps.version_step.outputs.release }}
+      version: ${{ steps.version_step.outputs.version }}
     steps:
       - name: Set version
         id: version_step
@@ -61,11 +61,11 @@ jobs:
           echo "ensha256=$(sha256sum picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-en-US.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
           echo "zhsha256=$(sha256sum picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-zh-CN.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
 
-          # msiinfo export picguard_1.0.1+405_windows_x64_en-US.msi Property | sed -n 's/^ProductCode\s\+//p'
+          # msiinfo export picguard-1.0.1.405.rc-windows-x64-en-US.msi Property | sed -n 's/^ProductCode\s\+//p'
           echo "enproductcode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-en-US.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
           echo "zhproductcode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-zh-CN.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
 
-          # msiinfo export picguard_1.0.1+405_windows_x64_en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p'
+          # msiinfo export picguard-1.0.1.405.rc-windows-x64-en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p'
           echo "enupgradecode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
           echo "zhupgradecode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}.rc-windows-x64-zh-CN.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
 
