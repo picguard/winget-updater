@@ -55,7 +55,7 @@ jobs:
             manifests/i/Insco
             .gitattributes
             .gitignore
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.WINGET_UPDATER_TOKEN }}
 
       - name: Pull & Push
         run: |
@@ -101,7 +101,7 @@ jobs:
     steps:
       - name: Create Pull Request
         env:
-          GH_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.WINGET_UPDATER_TOKEN }}
         run: |
           gh pr create \
             --repo https://github.com/microsoft/winget-pkgs \
