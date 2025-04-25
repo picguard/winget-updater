@@ -1,0 +1,119 @@
+name: Generate Manifest (Pro)
+run-name: Generate Manifest (Pro) ${{ inputs.tag_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        type: string
+        description: "Which tag are you using? (ex: v1.0.0+0)"
+        required: true
+  workflow_call:
+    inputs:
+      tag_name:
+        type: string
+        description: "Which tag are you using? (ex: v1.0.0+0)"
+        required: true
+
+jobs:
+  get_version:
+    name: Get version
+    runs-on: ubuntu-22.04
+    outputs:
+      release: ${{ steps.version_step.outputs.release }}
+      version: ${{ steps.version_step.outputs.version }}
+    steps:
+      - name: Set version
+        id: version_step
+        run: |
+          RELEASE=$(echo "$TAG_NAME" | sed -e "s/v//")
+          echo "release: $RELEASE"
+
+          VERSION=$(echo "$TAG_NAME" | sed -e "s/v//" -e "s/+/./")
+          echo "version: $VERSION"
+          
+          echo "release=$RELEASE" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        env:
+          TAG_NAME: ${{ inputs.tag_name }}
+
+  generate:
+    runs-on: ubuntu-22.04
+    needs: get_version
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install msitools
+        run: |
+          if ! command -v msiinfo >/dev/null 2>&1; then
+            echo "msitools not exists"
+            sudo apt-get update
+            sudo apt-get install msitools
+          fi
+          msiinfo --version
+
+      - name: Get SHA256
+        id: sha256
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}/picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi
+          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}/picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi
+          
+          echo "ensha256=$(sha256sum picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
+          echo "zhsha256=$(sha256sum picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
+          
+          # msiinfo export picguard-pro-1.0.1.405-windows-x64-en-US.msi Property | sed -n 's/^ProductCode\s\+//p'
+          echo "enproductcode=$(msiinfo export picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          echo "zhproductcode=$(msiinfo export picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          
+          # msiinfo export picguard-pro-1.0.1.405-windows-x64-en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p'
+          echo "enupgradecode=$(msiinfo export picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          echo "zhupgradecode=$(msiinfo export picguard-pro-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+
+      - name: Get ReleaseDate
+        id: date
+        run: |
+          echo "releasedate=$( \
+            curl -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              https://api.github.com/repos/picguard/picguard/releases/tags/${{ inputs.tag_name }} \
+            | jq -r '.published_at' \
+            | cut -c 1-10 \
+          )" >> $GITHUB_OUTPUT
+
+#      - name: Replace ReleaseNote URL
+#        id: releasenote
+#        run: |
+#          echo "url=$(echo ${{ inputs.release-note-url }} | sed 's@[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}/$@@')" >> $GITHUB_OUTPUT
+#          echo "url-ja=$(echo ${{ inputs.release-note-url-ja }} | sed 's@[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}/$@@')" >> $GITHUB_OUTPUT
+
+      - name: Replace
+        run: |
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/g' ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/g' ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i 's/${releasedate}/${{ steps.date.outputs.releasedate }}/' ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i 's/${ensha256}/${{ steps.sha256.outputs.ensha256 }}/' ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i 's/${zhsha256}/${{ steps.sha256.outputs.zhsha256 }}/' ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${enproductcode}'/'${{ steps.sha256.outputs.enproductcode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${zhproductcode}'/'${{ steps.sha256.outputs.zhproductcode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${enupgradecode}'/'${{ steps.sha256.outputs.enupgradecode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${zhupgradecode}'/'${{ steps.sha256.outputs.zhupgradecode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
+          
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/Insco.PicGuard.Pro.locale.en-US.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/Insco.PicGuard.Pro.locale.en-US.yaml
+          
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/Insco.PicGuard.Pro.locale.zh-CN.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/Insco.PicGuard.Pro.locale.zh-CN.yaml
+          
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/Insco.PicGuard.Pro.yaml
+          
+          # sed -i 's@${releasenote-en}@${{ steps.releasenote.outputs.url }}@' ./stable/Insco.PicGuard.Pro.locale.en-US.yaml
+          # sed -i 's@${releasenote-zh}@${{ steps.releasenote.outputs.url-zh }}@' ./stable/Insco.PicGuard.Pro.locale.zh-CN.yaml
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: manifest-pro-${{ inputs.tag_name }}
+          path: |
+            ./stable/Insco.PicGuard.Pro.installer.yaml
+            ./stable/Insco.PicGuard.Pro.locale.*.yaml
+            ./stable/Insco.PicGuard.Pro.yaml

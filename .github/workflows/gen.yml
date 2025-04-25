@@ -110,15 +110,6 @@ jobs:
           # sed -i 's@${releasenote-en}@${{ steps.releasenote.outputs.url }}@' ./stable/Insco.PicGuard.locale.en-US.yaml
           # sed -i 's@${releasenote-zh}@${{ steps.releasenote.outputs.url-zh }}@' ./stable/Insco.PicGuard.locale.zh-CN.yaml
 
-      #- id: yq-x64
-      #  uses: mikefarah/yq@v4
-      #  with:
-      #    cmd: yq eval '.Installers.[] | select(.Architecture == "x64") | .InstallerURL' 'Insco.PicGuard.installer.yml'
-      #
-      #- name: CalcHash & Replace
-      #  run: |
-      #    curl -OL ${{ steps.yq-x64.outputs.result }}
-
       - uses: actions/upload-artifact@v4
         with:
           name: manifest-${{ inputs.tag_name }}

@@ -1,0 +1,35 @@
+# Created with YamlCreate.ps1 v2.4.1 $debug=NVS1.CRLF.7-4-2.Win32NT
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.9.0.schema.json
+
+PackageIdentifier: Insco.PicGuard.Pro
+PackageVersion: ${version}
+Platform:
+  - Windows.Desktop
+MinimumOSVersion: 10.0.0.0
+InstallerType: wix
+Scope: machine
+InstallModes:
+  - interactive
+  - silent
+  - silentWithProgress
+UpgradeBehavior: install
+ReleaseDate: ${releasedate}
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}/picguard-pro-${version}-windows-x64-en-US.msi
+    InstallerSha256: ${ensha256}
+    InstallerLocale: en-US
+    ProductCode: '${enproductcode}'
+    AppsAndFeaturesEntries:
+      - ProductCode: '${enproductcode}'
+        UpgradeCode: '${enupgradecode}'
+  - Architecture: x64
+    InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}/picguard-pro-${version}-windows-x64-zh-CN.msi
+    InstallerSha256: ${zhsha256}
+    InstallerLocale: zh-CN
+    ProductCode: '${zhproductcode}'
+    AppsAndFeaturesEntries:
+      - ProductCode: '${zhproductcode}'
+        UpgradeCode: '${zhupgradecode}'
+ManifestType: installer
+ManifestVersion: 1.9.0

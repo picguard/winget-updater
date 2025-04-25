@@ -81,8 +81,8 @@ jobs:
       - get_version
       - commit
     runs-on: ubuntu-22.04
-    environment: 
-      name: Deploy-Pull-Request
+    environment:
+      name: Deploy-Pull-Request-Removed-Beta
     steps:
       - name: Create Pull Request
         env:

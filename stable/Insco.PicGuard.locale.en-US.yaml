@@ -5,8 +5,8 @@ PackageIdentifier: Insco.PicGuard
 PackageVersion: ${version}
 PackageLocale: en-US
 Publisher: Insco
-PublisherUrl: https://www.picguard.app
-PublisherSupportUrl: https://github.com/picguard/picguard/discussions
+PublisherUrl: https://www.insco.io
+PublisherSupportUrl: https://www.picguard.app/en/support
 PrivacyUrl: https://www.picguard.app/en/legal/privacy
 Author: kjxbyz
 PackageName: PicGuard
