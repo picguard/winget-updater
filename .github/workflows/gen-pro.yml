@@ -89,31 +89,31 @@ jobs:
 
       - name: Replace
         run: |
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/g' ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/g' ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i 's/${releasedate}/${{ steps.date.outputs.releasedate }}/' ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i 's/${ensha256}/${{ steps.sha256.outputs.ensha256 }}/' ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i 's/${zhsha256}/${{ steps.sha256.outputs.zhsha256 }}/' ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i "s/'\${enproductcode}'/'${{ steps.sha256.outputs.enproductcode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i "s/'\${zhproductcode}'/'${{ steps.sha256.outputs.zhproductcode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i "s/'\${enupgradecode}'/'${{ steps.sha256.outputs.enupgradecode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
-          sed -i "s/'\${zhupgradecode}'/'${{ steps.sha256.outputs.zhupgradecode }}'/g" ./stable/Insco.PicGuard.Pro.installer.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/g' ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/g' ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i 's/${releasedate}/${{ steps.date.outputs.releasedate }}/' ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i 's/${ensha256}/${{ steps.sha256.outputs.ensha256 }}/' ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i 's/${zhsha256}/${{ steps.sha256.outputs.zhsha256 }}/' ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${enproductcode}'/'${{ steps.sha256.outputs.enproductcode }}'/g" ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${zhproductcode}'/'${{ steps.sha256.outputs.zhproductcode }}'/g" ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${enupgradecode}'/'${{ steps.sha256.outputs.enupgradecode }}'/g" ./stable/PicGuard.PicGuard.Pro.installer.yaml
+          sed -i "s/'\${zhupgradecode}'/'${{ steps.sha256.outputs.zhupgradecode }}'/g" ./stable/PicGuard.PicGuard.Pro.installer.yaml
           
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/Insco.PicGuard.Pro.locale.en-US.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/Insco.PicGuard.Pro.locale.en-US.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/PicGuard.PicGuard.Pro.locale.en-US.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/PicGuard.PicGuard.Pro.locale.en-US.yaml
           
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/Insco.PicGuard.Pro.locale.zh-CN.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/Insco.PicGuard.Pro.locale.zh-CN.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/PicGuard.PicGuard.Pro.locale.zh-CN.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/PicGuard.PicGuard.Pro.locale.zh-CN.yaml
           
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/Insco.PicGuard.Pro.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/PicGuard.PicGuard.Pro.yaml
           
-          # sed -i 's@${releasenote-en}@${{ steps.releasenote.outputs.url }}@' ./stable/Insco.PicGuard.Pro.locale.en-US.yaml
-          # sed -i 's@${releasenote-zh}@${{ steps.releasenote.outputs.url-zh }}@' ./stable/Insco.PicGuard.Pro.locale.zh-CN.yaml
+          # sed -i 's@${releasenote-en}@${{ steps.releasenote.outputs.url }}@' ./stable/PicGuard.PicGuard.Pro.locale.en-US.yaml
+          # sed -i 's@${releasenote-zh}@${{ steps.releasenote.outputs.url-zh }}@' ./stable/PicGuard.PicGuard.Pro.locale.zh-CN.yaml
 
       - uses: actions/upload-artifact@v4
         with:
           name: manifest-pro-${{ inputs.tag_name }}
           path: |
-            ./stable/Insco.PicGuard.Pro.installer.yaml
-            ./stable/Insco.PicGuard.Pro.locale.*.yaml
-            ./stable/Insco.PicGuard.Pro.yaml
+            ./stable/PicGuard.PicGuard.Pro.installer.yaml
+            ./stable/PicGuard.PicGuard.Pro.locale.*.yaml
+            ./stable/PicGuard.PicGuard.Pro.yaml

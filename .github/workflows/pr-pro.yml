@@ -52,7 +52,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/winget-pkgs
           sparse-checkout: |
-            manifests/i/Insco
+            manifests/i/PicGuard
             .gitattributes
             .gitignore
           token: ${{ secrets.WINGET_UPDATER_TOKEN }}
@@ -67,14 +67,14 @@ jobs:
 
       - name: Create branch
         run: |
-          git branch Insco.PicGuard.Pro-${{ needs.get_version.outputs.version }}
-          git switch Insco.PicGuard.Pro-${{ needs.get_version.outputs.version }}
+          git branch PicGuard.PicGuard.Pro-${{ needs.get_version.outputs.version }}
+          git switch PicGuard.PicGuard.Pro-${{ needs.get_version.outputs.version }}
 
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: manifest-pro-${{ inputs.tag_name }}
-          path: manifests/i/Insco/PicGuard/Pro/${{ needs.get_version.outputs.version }}
+          path: manifests/i/PicGuard/PicGuard/Pro/${{ needs.get_version.outputs.version }}
 
       - name: Commit & Push
         run: |
@@ -82,8 +82,8 @@ jobs:
           git config --global user.name "${{ vars.GIT_NAME }}"
           git config --global core.autocrlf false
           git add .
-          git commit -m "New version: Insco.PicGuard.Pro version ${{ needs.get_version.outputs.version }}"
-          git push --set-upstream origin Insco.PicGuard.Pro-${{ needs.get_version.outputs.version }}
+          git commit -m "New version: PicGuard.PicGuard.Pro version ${{ needs.get_version.outputs.version }}"
+          git push --set-upstream origin PicGuard.PicGuard.Pro-${{ needs.get_version.outputs.version }}
 
   pr:
     if: ${{ inputs.is_pr }}
@@ -101,6 +101,6 @@ jobs:
           gh pr create \
             --repo https://github.com/microsoft/winget-pkgs \
             --base master \
-            --head ${{ github.repository_owner }}:Insco.PicGuard.Pro-${{ needs.get_version.outputs.version }} \
-            --title "New version: Insco.PicGuard.Pro version ${{ needs.get_version.outputs.version }}" \
+            --head ${{ github.repository_owner }}:PicGuard.PicGuard.Pro-${{ needs.get_version.outputs.version }} \
+            --title "New version: PicGuard.PicGuard.Pro version ${{ needs.get_version.outputs.version }}" \
             --body "### Pull request created by [PicGuard-WinGet-Updater](https://github.com/${{ github.repository }}) workflow run [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }})"

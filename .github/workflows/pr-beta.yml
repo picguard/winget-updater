@@ -52,7 +52,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/winget-pkgs
           sparse-checkout: |
-            manifests/i/Insco
+            manifests/i/PicGuard
             .gitattributes
             .gitignore
           token: ${{ secrets.WINGET_UPDATER_TOKEN }}
@@ -67,19 +67,19 @@ jobs:
 
       - name: Create branch
         run: |
-          git branch Insco.PicGuard.Beta-${{ needs.get_version.outputs.version }}
-          git switch Insco.PicGuard.Beta-${{ needs.get_version.outputs.version }}
+          git branch PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }}
+          git switch PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }}
 
       - name: Recreate directory
         run: |
-          rm -rf manifests/i/Insco/PicGuard/Beta
-          mkdir -pv manifests/i/Insco/PicGuard/Beta/${{ needs.get_version.outputs.version }}
+          rm -rf manifests/i/PicGuard/PicGuard/Beta
+          mkdir -pv manifests/i/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
 
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: manifest-${{ inputs.tag_name }}.rc
-          path: manifests/i/Insco/PicGuard/Beta/${{ needs.get_version.outputs.version }}
+          path: manifests/i/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
 
       - name: Commit & Push
         run: |
@@ -87,8 +87,8 @@ jobs:
           git config --global user.name "${{ vars.GIT_NAME }}"
           git config --global core.autocrlf false
           git add .
-          git commit -m "New version: Insco.PicGuard.Beta version ${{ needs.get_version.outputs.version }}"
-          git push --set-upstream origin Insco.PicGuard.Beta-${{ needs.get_version.outputs.version }}
+          git commit -m "New version: PicGuard.PicGuard.Beta version ${{ needs.get_version.outputs.version }}"
+          git push --set-upstream origin PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }}
 
   pr:
     if: ${{ inputs.is_pr }}
@@ -106,6 +106,6 @@ jobs:
           gh pr create \
             --repo https://github.com/microsoft/winget-pkgs \
             --base master \
-            --head ${{ github.repository_owner }}:Insco.PicGuard.Beta-${{ needs.get_version.outputs.version }} \
-            --title "New version: Insco.PicGuard.Beta version ${{ needs.get_version.outputs.version }}" \
+            --head ${{ github.repository_owner }}:PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }} \
+            --title "New version: PicGuard.PicGuard.Beta version ${{ needs.get_version.outputs.version }}" \
             --body "### Pull request created by [PicGuard-WinGet-Updater](https://github.com/${{ github.repository }}) workflow run [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }})"

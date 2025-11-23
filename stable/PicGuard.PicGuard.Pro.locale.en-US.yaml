@@ -1,7 +1,7 @@
 # Created with YamlCreate.ps1 v2.4.1 $debug=NVS1.CRLF.7-4-2.Win32NT
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
 
-PackageIdentifier: Insco.PicGuard.Pro.Beta
+PackageIdentifier: PicGuard.PicGuard.Pro
 PackageVersion: ${version}
 PackageLocale: en-US
 Publisher: Qiazo
@@ -9,7 +9,7 @@ PublisherUrl: https://qiazo.com
 PublisherSupportUrl: https://qiazo.com/en/support
 PrivacyUrl: https://picguard.app/en/legal/privacy
 Author: kjxbyz
-PackageName: PicGuard Pro(Beta)
+PackageName: PicGuard Pro
 PackageUrl: https://picguard.app
 License: GPL-3.0
 LicenseUrl: https://raw.githubusercontent.com/picguard/picguard/main/LICENSE
@@ -25,10 +25,10 @@ Description: |
   Download **PicGuard Pro** today and take control of your photo security and personalization like never before!
 Tags:
   - picguard
-  - picguard-pro
+  - picguard pro
   - watermark
   - watermarkassistant
   - watermark-assistant
-ReleaseNotesUrl: https://raw.githubusercontent.com/picguard/picguard/v${release}.rc/CHANGELOG.md
+ReleaseNotesUrl: https://raw.githubusercontent.com/picguard/picguard/v${release}/CHANGELOG.md
 ManifestType: defaultLocale
 ManifestVersion: 1.10.0

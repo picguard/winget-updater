@@ -83,28 +83,28 @@ jobs:
 
       - name: Replace
         run: |
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/g' ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/g' ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i 's/${releasedate}/${{ steps.date.outputs.releasedate }}/' ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i 's/${ensha256}/${{ steps.sha256.outputs.ensha256 }}/' ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i 's/${zhsha256}/${{ steps.sha256.outputs.zhsha256 }}/' ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i "s/'\${enproductcode}'/'${{ steps.sha256.outputs.enproductcode }}'/g" ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i "s/'\${zhproductcode}'/'${{ steps.sha256.outputs.zhproductcode }}'/g" ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i "s/'\${enupgradecode}'/'${{ steps.sha256.outputs.enupgradecode }}'/g" ./beta/Insco.PicGuard.Beta.installer.yaml
-          sed -i "s/'\${zhupgradecode}'/'${{ steps.sha256.outputs.zhupgradecode }}'/g" ./beta/Insco.PicGuard.Beta.installer.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/g' ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/g' ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i 's/${releasedate}/${{ steps.date.outputs.releasedate }}/' ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i 's/${ensha256}/${{ steps.sha256.outputs.ensha256 }}/' ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i 's/${zhsha256}/${{ steps.sha256.outputs.zhsha256 }}/' ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i "s/'\${enproductcode}'/'${{ steps.sha256.outputs.enproductcode }}'/g" ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i "s/'\${zhproductcode}'/'${{ steps.sha256.outputs.zhproductcode }}'/g" ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i "s/'\${enupgradecode}'/'${{ steps.sha256.outputs.enupgradecode }}'/g" ./beta/PicGuard.PicGuard.Beta.installer.yaml
+          sed -i "s/'\${zhupgradecode}'/'${{ steps.sha256.outputs.zhupgradecode }}'/g" ./beta/PicGuard.PicGuard.Beta.installer.yaml
           
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./beta/Insco.PicGuard.Beta.locale.en-US.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./beta/Insco.PicGuard.Beta.locale.en-US.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./beta/PicGuard.PicGuard.Beta.locale.en-US.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./beta/PicGuard.PicGuard.Beta.locale.en-US.yaml
           
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./beta/Insco.PicGuard.Beta.locale.zh-CN.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./beta/Insco.PicGuard.Beta.locale.zh-CN.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./beta/PicGuard.PicGuard.Beta.locale.zh-CN.yaml
+          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./beta/PicGuard.PicGuard.Beta.locale.zh-CN.yaml
           
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./beta/Insco.PicGuard.Beta.yaml
+          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./beta/PicGuard.PicGuard.Beta.yaml
 
       - uses: actions/upload-artifact@v4
         with:
           name: manifest-${{ inputs.tag_name }}.rc
           path: |
-            ./beta/Insco.PicGuard.Beta.installer.yaml
-            ./beta/Insco.PicGuard.Beta.locale.*.yaml
-            ./beta/Insco.PicGuard.Beta.yaml
+            ./beta/PicGuard.PicGuard.Beta.installer.yaml
+            ./beta/PicGuard.PicGuard.Beta.locale.*.yaml
+            ./beta/PicGuard.PicGuard.Beta.yaml
