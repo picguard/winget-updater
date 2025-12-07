@@ -52,7 +52,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/winget-pkgs
           sparse-checkout: |
-            manifests/i/PicGuard
+            manifests/p/PicGuard
             .gitattributes
             .gitignore
           token: ${{ secrets.WINGET_UPDATER_TOKEN }}
@@ -72,14 +72,14 @@ jobs:
 
       - name: Recreate directory
         run: |
-          rm -rf manifests/i/PicGuard/PicGuard/Beta
-          mkdir -pv manifests/i/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
+          rm -rf manifests/p/PicGuard/PicGuard/Beta
+          mkdir -pv manifests/p/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
 
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: manifest-${{ inputs.tag_name }}.rc
-          path: manifests/i/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
+          path: manifests/p/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
 
       - name: Commit & Push
         run: |

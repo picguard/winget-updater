@@ -52,7 +52,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/winget-pkgs
           sparse-checkout: |
-            manifests/i/PicGuard
+            manifests/p/PicGuard
             .gitattributes
             .gitignore
           token: ${{ secrets.WINGET_UPDATER_TOKEN }}
@@ -74,7 +74,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: manifest-pro-${{ inputs.tag_name }}
-          path: manifests/i/PicGuard/PicGuard/Pro/${{ needs.get_version.outputs.version }}
+          path: manifests/p/PicGuard/PicGuard/Pro/${{ needs.get_version.outputs.version }}
 
       - name: Commit & Push
         run: |
