@@ -1,7 +1,6 @@
 # WinGet-Updater
 
-> WinGet Automatic Updater for PicGuard. This repository is inspired
-> by [Floorp-WinGet-Updater](https://github.com/Hibi-10000/Floorp-WinGet-Updater)
+> WinGet Automatic Updater for PicGuard.
 
 [![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/gen.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen.yml)
 [![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/pr.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr.yml)
