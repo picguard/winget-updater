@@ -54,20 +54,46 @@ jobs:
 
       - name: Get SHA256
         id: sha256
+        shell: bash
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}/picguard-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi
-          curl -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" -fOL https://github.com/picguard/picguard/releases/download/v${{ needs.get_version.outputs.release }}/picguard-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi
-          
-          echo "ensha256=$(sha256sum picguard-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
-          echo "zhsha256=$(sha256sum picguard-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi | cut -c 1-64 | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
-          
-          # msiinfo export picguard-1.0.1.405-windows-x64-en-US.msi Property | sed -n 's/^ProductCode\s\+//p'
-          echo "enproductcode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
-          echo "zhproductcode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi Property | sed -n 's/^ProductCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
-          
-          # msiinfo export picguard-1.0.1.405-windows-x64-en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p'
-          echo "enupgradecode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}-windows-x64-en-US.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
-          echo "zhupgradecode=$(msiinfo export picguard-${{ needs.get_version.outputs.version }}-windows-x64-zh-CN.msi Property | sed -n 's/^UpgradeCode\s\+//p' | cut -c 1-38)" >> $GITHUB_OUTPUT
+          set -euo pipefail
+
+          base="https://github.com/picguard/picguard/releases/download/v${RELEASE}"
+
+          # 这里维护所有语言：前缀prefix + locale（文件名后缀）
+          # prefix 决定输出变量名：${prefix}sha256 / ${prefix}productcode / ${prefix}upgradecode
+          declare -a items=(
+            "en:en-US"
+            "zh:zh-CN"
+          )
+
+          for item in "${items[@]}"; do
+            prefix="${item%%:*}"
+            locale="${item##*:}"
+
+            file="picguard-${VERSION}-windows-x64-${locale}.msi"
+            url="${base}/${file}"
+
+            echo "Downloading: ${url}"
+            curl -fL \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -o "${file}" \
+              "${url}"
+
+            sha="$(sha256sum "${file}" | cut -c 1-64 | tr '[:lower:]' '[:upper:]')"
+            product="$(msiinfo export "${file}" Property | sed -n 's/^ProductCode[[:space:]]\+//p' | cut -c 1-38)"
+            upgrade="$(msiinfo export "${file}" Property | sed -n 's/^UpgradeCode[[:space:]]\+//p' | cut -c 1-38)"
+
+            {
+              echo "${prefix}sha256=${sha}"
+              echo "${prefix}productcode=${product}"
+              echo "${prefix}upgradecode=${upgrade}"
+            } >> "$GITHUB_OUTPUT"
+          done
+        env:
+          TOKEN: ${{ secrets.PG_RELEASE_TOKEN }}
+          RELEASE: ${{ needs.get_version.outputs.release }}
+          VERSION: ${{ needs.get_version.outputs.version }}
 
       - name: Get ReleaseDate
         id: date
@@ -88,27 +114,68 @@ jobs:
 #          echo "url-ja=$(echo ${{ inputs.release-note-url-ja }} | sed 's@[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}/$@@')" >> $GITHUB_OUTPUT
 
       - name: Replace
+        shell: bash
         run: |
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/g' ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/g' ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i 's/${releasedate}/${{ steps.date.outputs.releasedate }}/' ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i 's/${ensha256}/${{ steps.sha256.outputs.ensha256 }}/' ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i 's/${zhsha256}/${{ steps.sha256.outputs.zhsha256 }}/' ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i "s/'\${enproductcode}'/'${{ steps.sha256.outputs.enproductcode }}'/g" ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i "s/'\${zhproductcode}'/'${{ steps.sha256.outputs.zhproductcode }}'/g" ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i "s/'\${enupgradecode}'/'${{ steps.sha256.outputs.enupgradecode }}'/g" ./stable/PicGuard.PicGuard.installer.yaml
-          sed -i "s/'\${zhupgradecode}'/'${{ steps.sha256.outputs.zhupgradecode }}'/g" ./stable/PicGuard.PicGuard.installer.yaml
-          
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/PicGuard.PicGuard.locale.en-US.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/PicGuard.PicGuard.locale.en-US.yaml
-          
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/PicGuard.PicGuard.locale.zh-CN.yaml
-          sed -i 's/${release}/${{ needs.get_version.outputs.release }}/' ./stable/PicGuard.PicGuard.locale.zh-CN.yaml
-          
-          sed -i 's/${version}/${{ needs.get_version.outputs.version }}/' ./stable/PicGuard.PicGuard.yaml
-          
-          # sed -i 's@${releasenote-en}@${{ steps.releasenote.outputs.url }}@' ./stable/PicGuard.PicGuard.locale.en-US.yaml
-          # sed -i 's@${releasenote-zh}@${{ steps.releasenote.outputs.url-zh }}@' ./stable/PicGuard.PicGuard.locale.zh-CN.yaml
+          set -euo pipefail
+
+          installer="./stable/PicGuard.PicGuard.installer.yaml"
+
+          # 先做全局变量
+          sed -i \
+            -e "s/\${version}/${VERSION}/g" \
+            -e "s/\${release}/${RELEASE}/g" \
+            -e "s/\${releasedate}/${RELEASEDATE}/g" \
+            "$installer"
+
+          # 一个映射表：prefix -> locale
+          items=(
+            "en:en-US"
+            "zh:zh-CN"
+          )
+
+          for item in "${items[@]}"; do
+            p="${item%%:*}"       # prefix
+            loc="${item##*:}"     # locale
+
+            up="$(echo "$p" | tr '[:lower:]' '[:upper:]')"
+
+            sha_var="${up}SHA256"
+            prod_var="${up}PRODUCT"
+            upg_var="${up}UPGRADE"
+
+            sha="${!sha_var}"
+            prod="${!prod_var}"
+            upg="${!upg_var}"
+
+            # installer.yaml：替换 sha / productcode / upgradecode
+            sed -i \
+              -e "s/\${${p}sha256}/${sha}/g" \
+              -e "s/'\${${p}productcode}'/'${prod}'/g" \
+              -e "s/'\${${p}upgradecode}'/'${upg}'/g" \
+              "$installer"
+
+            # locale.<loc>.yaml：只替 version / release
+            f="./stable/PicGuard.PicGuard.locale.${loc}.yaml"
+            sed -i \
+              -e "s/\${version}/${VERSION}/g" \
+              -e "s/\${release}/${RELEASE}/g" \
+              "$f"
+          done
+
+          # 主入口 yaml
+          sed -i -e "s/\${version}/${VERSION}/g" ./stable/PicGuard.PicGuard.yaml
+        env:
+          VERSION: ${{ needs.get_version.outputs.version }}
+          RELEASE: ${{ needs.get_version.outputs.release }}
+          RELEASEDATE: ${{ steps.date.outputs.releasedate }}
+          # 把 step outputs 映射成环境变量，方便在 bash 循环里间接引用
+          ENSHA256: ${{ steps.sha256.outputs.ensha256 }}
+          ENPRODUCT: ${{ steps.sha256.outputs.enproductcode }}
+          ENUPGRADE: ${{ steps.sha256.outputs.enupgradecode }}
+
+          ZHSHA256: ${{ steps.sha256.outputs.zhsha256 }}
+          ZHPRODUCT: ${{ steps.sha256.outputs.zhproductcode }}
+          ZHUPGRADE: ${{ steps.sha256.outputs.zhupgradecode }}
 
       - uses: actions/upload-artifact@v4
         with:
