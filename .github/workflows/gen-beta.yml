@@ -171,7 +171,7 @@ jobs:
           ZHPRODUCT: ${{ steps.sha256.outputs.zhproductcode }}
           ZHUPGRADE: ${{ steps.sha256.outputs.zhupgradecode }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: manifest-${{ inputs.tag_name }}.rc
           path: |
