@@ -60,23 +60,27 @@ jobs:
 
           base="https://github.com/picguard/picguard/releases/download/v${RELEASE}.rc"
 
-          # 这里维护所有语言：前缀prefix + locale（文件名后缀）
-          # prefix 决定输出变量名：${prefix}sha256 / ${prefix}productcode / ${prefix}upgradecode
+          # 这里维护所有语言和架构的组合：前缀prefix + locale（文件名后缀）+ arch（架构）
+          # prefix 决定输出变量名：${prefix}_${arch}_sha256 / ${prefix}_${arch}_productcode / ${prefix}_${arch}_upgradecode
           declare -a items=(
-            "en:en-US"
-            "zh:zh-CN"
+            "en:en-US:x64"
+            "en:en-US:arm64"
+            "zh:zh-CN:x64"
+            "zh:zh-CN:arm64"
           )
 
           for item in "${items[@]}"; do
             prefix="${item%%:*}"
-            locale="${item##*:}"
+            temp="${item#*:}"
+            locale="${temp%%:*}"
+            arch="${temp##*:}"
 
-            file="picguard-${VERSION}.rc-windows-x64-${locale}.msi"
+            file="picguard-${VERSION}.rc-windows-${arch}-${locale}.msi"
             url="${base}/${file}"
 
             echo "Downloading: ${url}"
             curl -fL \
-              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Authorization: Bearer ${RELEASE_TOKEN}" \
               -o "${file}" \
               "${url}"
 
@@ -85,24 +89,24 @@ jobs:
             upgrade="$(msiinfo export "${file}" Property | sed -n 's/^UpgradeCode[[:space:]]\+//p' | cut -c 1-38)"
 
             {
-              echo "${prefix}sha256=${sha}"
-              echo "${prefix}productcode=${product}"
-              echo "${prefix}upgradecode=${upgrade}"
+              echo "${prefix}_${arch}_sha256=${sha}"
+              echo "${prefix}_${arch}_productcode=${product}"
+              echo "${prefix}_${arch}_upgradecode=${upgrade}"
             } >> "$GITHUB_OUTPUT"
           done
         env:
-          TOKEN: ${{ secrets.PG_RELEASE_TOKEN }}
+          RELEASE_TOKEN: ${{ secrets.PG_RELEASE_TOKEN }}
           RELEASE: ${{ needs.get_version.outputs.release }}
           VERSION: ${{ needs.get_version.outputs.version }}
 
-      - name: Get ReleaseDate
+      - name: Get Release Date
         id: date
         run: |
-          echo "releasedate=$( \
+          echo "release_date=$( \
             curl -L \
               -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ github.token }}" \
-              https://api.github.com/repos/picguard/picguard/releases/tags/v${{ inputs.tag_name }}.rc \
+              -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" \
+              https://api.github.com/repos/picguard/picguard/releases/tags/v${{ needs.get_version.outputs.release }}.rc \
             | jq -r '.published_at' \
             | cut -c 1-10 \
           )" >> $GITHUB_OUTPUT
@@ -118,24 +122,38 @@ jobs:
           sed -i \
             -e "s/\${version}/${VERSION}/g" \
             -e "s/\${release}/${RELEASE}/g" \
-            -e "s/\${releasedate}/${RELEASEDATE}/g" \
+            -e "s/\${release_date}/${RELEASE_DATE}/g" \
             "$installer"
 
-          # 一个映射表：prefix -> locale
+          # 一个映射表：prefix -> locale -> arch
           items=(
-            "en:en-US"
-            "zh:zh-CN"
+            "en:en-US:x64"
+            "en:en-US:arm64"
+            "zh:zh-CN:x64"
+            "zh:zh-CN:arm64"
           )
 
+          # 提取所有唯一的 locale 值
+          declare -A locale_set
+
+          # 处理 installer.yaml 中的架构相关替换
           for item in "${items[@]}"; do
-            p="${item%%:*}"       # prefix
-            loc="${item##*:}"     # locale
+            prefix="${item%%:*}"       # prefix
+            temp="${item#*:}"
+            loc="${temp%%:*}"     # locale
+            arch="${temp##*:}"    # arch
 
-            up="$(echo "$p" | tr '[:lower:]' '[:upper:]')"
+            # 收集唯一的 locale 值
+            if [[ -z "${locale_set[$loc]+x}" ]]; then
+              locale_set["$loc"]=1
+            fi
 
-            sha_var="${up}SHA256"
-            prod_var="${up}PRODUCT"
-            upg_var="${up}UPGRADE"
+            up_prefix="$(echo "$prefix" | tr '[:lower:]' '[:upper:]')"
+            up_arch="$(echo "$arch" | tr '[:lower:]' '[:upper:]')"
+
+            sha_var="${up_prefix}_${up_arch}_SHA256"
+            prod_var="${up_prefix}_${up_arch}_PRODUCT"
+            upg_var="${up_prefix}_${up_arch}_UPGRADE"
 
             sha="${!sha_var}"
             prod="${!prod_var}"
@@ -143,17 +161,18 @@ jobs:
 
             # installer.yaml：替换 sha / productcode / upgradecode
             sed -i \
-              -e "s/\${${p}sha256}/${sha}/g" \
-              -e "s/'\${${p}productcode}'/'${prod}'/g" \
-              -e "s/'\${${p}upgradecode}'/'${upg}'/g" \
+              -e "s/\${${prefix}_${arch}_sha256}/${sha}/g" \
+              -e "s/'\${${prefix}_${arch}_productcode}'/'${prod}'/g" \
+              -e "s/'\${${prefix}_${arch}_upgradecode}'/'${upg}'/g" \
               "$installer"
+          done
 
-            # locale.<loc>.yaml：只替 version / release
-            f="./beta/PicGuard.PicGuard.Beta.locale.${loc}.yaml"
+          # 处理 locale.<loc>.yaml：只替 version / release
+          for loc in "${!locale_set[@]}"; do
             sed -i \
               -e "s/\${version}/${VERSION}/g" \
               -e "s/\${release}/${RELEASE}/g" \
-              "$f"
+              "./beta/PicGuard.PicGuard.Beta.locale.${loc}.yaml"
           done
 
           # 主入口 yaml
@@ -161,15 +180,23 @@ jobs:
         env:
           VERSION: ${{ needs.get_version.outputs.version }}
           RELEASE: ${{ needs.get_version.outputs.release }}
-          RELEASEDATE: ${{ steps.date.outputs.releasedate }}
+          RELEASE_DATE: ${{ steps.date.outputs.release_date }}
           # 把 step outputs 映射成环境变量，方便在 bash 循环里间接引用
-          ENSHA256: ${{ steps.sha256.outputs.ensha256 }}
-          ENPRODUCT: ${{ steps.sha256.outputs.enproductcode }}
-          ENUPGRADE: ${{ steps.sha256.outputs.enupgradecode }}
+          EN_X64_SHA256: ${{ steps.sha256.outputs.en_x64_sha256 }}
+          EN_X64_PRODUCT: ${{ steps.sha256.outputs.en_x64_productcode }}
+          EN_X64_UPGRADE: ${{ steps.sha256.outputs.en_x64_upgradecode }}
 
-          ZHSHA256: ${{ steps.sha256.outputs.zhsha256 }}
-          ZHPRODUCT: ${{ steps.sha256.outputs.zhproductcode }}
-          ZHUPGRADE: ${{ steps.sha256.outputs.zhupgradecode }}
+          EN_ARM64_SHA256: ${{ steps.sha256.outputs.en_arm64_sha256 }}
+          EN_ARM64_PRODUCT: ${{ steps.sha256.outputs.en_arm64_productcode }}
+          EN_ARM64_UPGRADE: ${{ steps.sha256.outputs.en_arm64_upgradecode }}
+
+          ZH_X64_SHA256: ${{ steps.sha256.outputs.zh_x64_sha256 }}
+          ZH_X64_PRODUCT: ${{ steps.sha256.outputs.zh_x64_productcode }}
+          ZH_X64_UPGRADE: ${{ steps.sha256.outputs.zh_x64_upgradecode }}
+
+          ZH_ARM64_SHA256: ${{ steps.sha256.outputs.zh_arm64_sha256 }}
+          ZH_ARM64_PRODUCT: ${{ steps.sha256.outputs.zh_arm64_productcode }}
+          ZH_ARM64_UPGRADE: ${{ steps.sha256.outputs.zh_arm64_upgradecode }}
 
       - uses: actions/upload-artifact@v7
         with:
