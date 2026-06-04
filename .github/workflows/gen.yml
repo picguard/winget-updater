@@ -105,8 +105,8 @@ jobs:
           echo "release_date=$( \
             curl -L \
               -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.PG_RELEASE_TOKEN }}" \
-              https://api.github.com/repos/picguard/picguard/releases/tags/v${{ needs.get_version.outputs.release }} \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              https://api.github.com/repos/picguard/picguard/releases/tags/${{ inputs.tag_name }} \
             | jq -r '.published_at' \
             | cut -c 1-10 \
           )" >> $GITHUB_OUTPUT
