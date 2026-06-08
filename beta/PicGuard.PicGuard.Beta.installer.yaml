@@ -41,7 +41,7 @@ Installers:
         UpgradeCode: '${zh_x64_upgradecode}'
   - Architecture: arm64
     InstallerUrl: https://github.com/picguard/picguard/releases/download/v${release}.rc/picguard-${version}.rc-windows-arm64-zh-CN.msi
-    InstallerSha256: ${en_arm64_sha256}
+    InstallerSha256: ${zh_arm64_sha256}
     InstallerLocale: zh-CN
     ProductCode: '${zh_arm64_productcode}'
     AppsAndFeaturesEntries:
