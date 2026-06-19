@@ -41,7 +41,7 @@ jobs:
       - get_version
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: ${{ github.repository_owner }}/winget-pkgs
           sparse-checkout: |
