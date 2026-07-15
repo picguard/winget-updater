@@ -1,7 +1,7 @@
 # Created with YamlCreate.ps1 v2.4.1 $debug=NVS1.CRLF.7-4-2.Win32NT
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.locale.1.12.0.schema.json
 
-PackageIdentifier: PicGuard.PicGuard.Beta
+PackageIdentifier: PicGuard.PicGuard.RC
 PackageVersion: ${version}
 PackageLocale: zh-CN
 Publisher: Qiazo
@@ -9,7 +9,7 @@ PublisherUrl: https://qiazo.com
 PublisherSupportUrl: https://qiazo.com/zh/support
 PrivacyUrl: https://picguard.org/zh/legal/privacy
 Author: kjxbyz
-PackageName: PicGuard Beta
+PackageName: PicGuard RC
 PackageUrl: https://picguard.org
 License: GPL-3.0
 LicenseUrl: https://raw.githubusercontent.com/picguard/picguard/main/LICENSE

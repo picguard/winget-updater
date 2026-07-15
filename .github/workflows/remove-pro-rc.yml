@@ -1,5 +1,5 @@
-name: PR (Beta)
-run-name: PR (Beta) ${{ inputs.tag_name }}
+name: Remove Version (Pro RC)
+run-name: Remove Version (Pro RC) ${{ inputs.tag_name }}
 
 on:
   workflow_dispatch:
@@ -36,16 +36,9 @@ jobs:
         env:
           TAG_NAME: ${{ inputs.tag_name }}
 
-  generate:
-    uses: ./.github/workflows/gen-beta.yml
-    needs: get_version
-    with:
-      tag_name: ${{ inputs.tag_name }}
-
   commit:
     needs:
       - get_version
-      - generate
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v7
@@ -67,19 +60,11 @@ jobs:
 
       - name: Create branch
         run: |
-          git branch PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }}
-          git switch PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }}
+          git branch Remove-PicGuard.PicGuard.Pro.RC-${{ needs.get_version.outputs.version }}
+          git switch Remove-PicGuard.PicGuard.Pro.RC-${{ needs.get_version.outputs.version }}
 
-      - name: Recreate directory
-        run: |
-          rm -rf manifests/p/PicGuard/PicGuard/Beta
-          mkdir -pv manifests/p/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
-
-      - name: Download a Build Artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: manifest-${{ inputs.tag_name }}.rc
-          path: manifests/p/PicGuard/PicGuard/Beta/${{ needs.get_version.outputs.version }}
+      - name: Remove version
+        run: rm -rf manifests/p/PicGuard/PicGuard/Pro/RC/${{ needs.get_version.outputs.version }}
 
       - name: Commit & Push
         run: |
@@ -87,8 +72,8 @@ jobs:
           git config --global user.name "${{ vars.GIT_NAME }}"
           git config --global core.autocrlf false
           git add .
-          git commit -m "New version: PicGuard.PicGuard.Beta version ${{ needs.get_version.outputs.version }}"
-          git push --set-upstream origin PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }}
+          git commit -m "Remove version: PicGuard.PicGuard.Pro.RC version ${{ needs.get_version.outputs.version }}"
+          git push --set-upstream origin Remove-PicGuard.PicGuard.Pro.RC-${{ needs.get_version.outputs.version }}
 
   pr:
     if: ${{ inputs.is_pr }}
@@ -96,8 +81,8 @@ jobs:
       - get_version
       - commit
     runs-on: ubuntu-22.04
-    environment: 
-      name: Deploy-Pull-Request-Beta
+    environment:
+      name: Deploy-Pull-Request-Pro-Removed-RC
     steps:
       - name: Create Pull Request
         env:
@@ -106,6 +91,6 @@ jobs:
           gh pr create \
             --repo https://github.com/microsoft/winget-pkgs \
             --base master \
-            --head ${{ github.repository_owner }}:PicGuard.PicGuard.Beta-${{ needs.get_version.outputs.version }} \
-            --title "New version: PicGuard.PicGuard.Beta version ${{ needs.get_version.outputs.version }}" \
+            --head ${{ github.repository_owner }}:Remove-PicGuard.PicGuard.Pro.RC-${{ needs.get_version.outputs.version }} \
+            --title "Remove version: PicGuard.PicGuard.Pro.RC version ${{ needs.get_version.outputs.version }}" \
             --body "### Pull request created by [PicGuard-WinGet-Updater](https://github.com/${{ github.repository }}) workflow run [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }})"

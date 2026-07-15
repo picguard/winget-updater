@@ -2,19 +2,19 @@
 
 > WinGet Automatic Updater for PicGuard.
 
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/gen.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/pr.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/remove.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-beta.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-beta.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-beta.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-beta.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-beta.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-beta.yml)
+[![Generate Manifest (RC)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-rc.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-rc.yml)
+[![PR (RC)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-rc.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-rc.yml)
+[![Remove version (RC)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-rc.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-rc.yml)
+[![Generate Manifest](https://github.com/picguard/WinGet-Updater/actions/workflows/gen.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen.yml)
+[![PR](https://github.com/picguard/WinGet-Updater/actions/workflows/pr.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr.yml)
+[![Remove version](https://github.com/picguard/WinGet-Updater/actions/workflows/remove.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove.yml)
 
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro-beta.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro-beta.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro-beta.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro-beta.yml)
-[![Test](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro-beta.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro-beta.yml)
+[![Generate Manifest (Pro RC)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro-rc.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro-rc.yml)
+[![PR (Pro RC)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro-rc.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro-rc.yml)
+[![Remove version (Pro RC)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro-rc.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro-rc.yml)
+[![Generate Manifest (Pro)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/gen-pro.yml)
+[![PR (Pro)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/pr-pro.yml)
+[![Remove version (Pro)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro.yml/badge.svg)](https://github.com/picguard/WinGet-Updater/actions/workflows/remove-pro.yml)
 
 ## Requirements
 

@@ -1,5 +1,5 @@
-name: Generate Manifest (Pro Beta)
-run-name: Generate Manifest (Pro Beta) ${{ inputs.tag_name }}
+name: Generate Manifest (Pro RC)
+run-name: Generate Manifest (Pro RC) ${{ inputs.tag_name }}
 
 on:
   workflow_dispatch:
@@ -116,7 +116,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          installer="./beta/PicGuard.PicGuard.Pro.Beta.installer.yaml"
+          installer="./rc/PicGuard.PicGuard.Pro.RC.installer.yaml"
 
           # 先做全局变量
           sed -i \
@@ -172,11 +172,11 @@ jobs:
             sed -i \
               -e "s/\${version}/${VERSION}/g" \
               -e "s/\${release}/${RELEASE}/g" \
-              "./beta/PicGuard.PicGuard.Pro.Beta.locale.${loc}.yaml"
+              "./rc/PicGuard.PicGuard.Pro.RC.locale.${loc}.yaml"
           done
 
           # 主入口 yaml
-          sed -i -e "s/\${version}/${VERSION}/g" ./beta/PicGuard.PicGuard.Pro.Beta.yaml
+          sed -i -e "s/\${version}/${VERSION}/g" ./rc/PicGuard.PicGuard.Pro.RC.yaml
         env:
           VERSION: ${{ needs.get_version.outputs.version }}
           RELEASE: ${{ needs.get_version.outputs.release }}
@@ -202,6 +202,6 @@ jobs:
         with:
           name: manifest-pro-${{ inputs.tag_name }}.rc
           path: |
-            ./beta/PicGuard.PicGuard.Pro.Beta.installer.yaml
-            ./beta/PicGuard.PicGuard.Pro.Beta.locale.*.yaml
-            ./beta/PicGuard.PicGuard.Pro.Beta.yaml
+            ./rc/PicGuard.PicGuard.Pro.RC.installer.yaml
+            ./rc/PicGuard.PicGuard.Pro.RC.locale.*.yaml
+            ./rc/PicGuard.PicGuard.Pro.RC.yaml
